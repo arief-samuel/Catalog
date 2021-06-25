@@ -16,6 +16,12 @@ namespace Catalog.Repositories
             new Item { Id = Guid.NewGuid(), Name = "Guard", Price = 8, CreatedDate = DateTimeOffset.Now },
             new Item { Id = Guid.NewGuid(), Name = "Knife", Price = 4, CreatedDate = DateTimeOffset.Now },
         };
+
+        public void CreateItem(Item item)
+        {
+            items.Add(item);
+        }
+
         public Item GetItem(Guid Id)
         {
             return items.Where(x => x.Id == Id).SingleOrDefault();
