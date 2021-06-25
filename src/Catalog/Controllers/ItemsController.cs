@@ -1,9 +1,11 @@
-﻿using System;
+﻿using System.Linq;
+using System;
 using System.Collections.Generic;
 using Catalog.Entities;
 using Catalog.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Catalog.Dtos;
 
 namespace Catalog.Controllers
 {
@@ -19,14 +21,15 @@ namespace Catalog.Controllers
             this.repository = repository;
         }
         [HttpGet]
-        public IEnumerable<Item> GetItems()
+        public IEnumerable<ItemDto> GetItems()
         {
-            return repository.GetItem();
+            var items = repository.GetItem().Select(item => item.AsDto());
+            return items;
         }
         [HttpGet("{Id}")]
-        public Item GetItem(Guid Id)
+        public ItemDto GetItem(Guid Id)
         {
-            return repository.GetItem(Id);
+            return repository.GetItem(Id).AsDto();
         }
     }
 }
