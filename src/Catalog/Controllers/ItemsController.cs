@@ -27,8 +27,12 @@ namespace Catalog.Controllers
             return items;
         }
         [HttpGet("{Id}")]
-        public ItemDto GetItem(Guid Id)
+        public ActionResult<ItemDto> GetItem(Guid Id)
         {
+            var existingItem = repository.GetItem(Id);
+            if (existingItem is null)
+                return NotFound();
+
             return repository.GetItem(Id).AsDto();
         }
         [HttpPost]
@@ -60,6 +64,17 @@ namespace Catalog.Controllers
             return NoContent();
 
 
+        }
+        [HttpDelete("{Id}")]
+        public ActionResult DeleteItem(Guid Id)
+        {
+            var existingItem = repository.GetItem(Id);
+            if (existingItem is null)
+                return NotFound();
+
+            repository.DeleteItem(Id);
+
+            return NoContent();
         }
     }
 }

@@ -22,6 +22,12 @@ namespace Catalog.Repositories
             items.Add(item);
         }
 
+        public void DeleteItem(Guid id)
+        {
+            var index = items.FindIndex(existingItem => existingItem.Id == id);
+            items.RemoveAt(index);
+        }
+
         public Item GetItem(Guid Id)
         {
             return items.Where(x => x.Id == Id).SingleOrDefault();
