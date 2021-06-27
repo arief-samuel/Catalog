@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Catalog.Entities;
 
 namespace Catalog.Repositories
@@ -17,30 +18,37 @@ namespace Catalog.Repositories
             new Item { Id = Guid.NewGuid(), Name = "Knife", Price = 4, CreatedDate = DateTimeOffset.Now },
         };
 
-        public void CreateItem(Item item)
+        public async Task CreateItemAsync(Item item)
         {
             items.Add(item);
+            await Task.FromResult(item);
         }
 
-        public void DeleteItem(Guid id)
+        public async Task DeleteItemAsync(Guid id)
         {
             var index = items.FindIndex(existingItem => existingItem.Id == id);
             items.RemoveAt(index);
+
+            await Task.CompletedTask;
+
         }
 
-        public Item GetItem(Guid Id)
+        public async Task<Item> GetItemAsync(Guid Id)
         {
-            return items.Where(x => x.Id == Id).SingleOrDefault();
+            var item = items.Where(x => x.Id == Id).SingleOrDefault();
+            return await Task.FromResult(item);
         }
-        public IEnumerable<Item> GetItem()
+        public async Task<IEnumerable<Item>> GetItemAsync()
         {
-            return items;
+            return await Task.FromResult(items);
         }
 
-        public void UpdateItem(Item item)
+        public async Task UpdateItemAsync(Item item)
         {
             var index = items.FindIndex(existingItem => existingItem.Id == item.Id);
             items[index] = item;
+
+            await Task.CompletedTask;
         }
     }
 }
