@@ -1,21 +1,26 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-focal AS base
-WORKDIR /app
-EXPOSE 80
-
-ENV ASPNETCORE_URLS=http://+:80
-
-FROM mcr.microsoft.com/dotnet/sdk:5.0-focal AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS publish
 WORKDIR /src
 COPY ["Catalog.csproj", "./"]
-RUN dotnet restore "Catalog.csproj"
+
+RUN dotnet restore "Catalog.csproj" --runtime alpine-x64
 COPY . .
-WORKDIR "/src/."
-RUN dotnet build "Catalog.csproj" -c Release -o /app/build
+RUN dotnet publish "Catalog.csproj" -c Release -o /app/publish \
+    --no-restore \
+    --runtime alpine-x64 \
+    --self-contained true \
+    /p:PublishTrimmed=true \
+    /p:PublishSingleFile=true
 
-FROM build AS publish
-RUN dotnet publish "Catalog.csproj" -c Release -o /app/publish
+FROM mcr.microsoft.com/dotnet/runtime-deps:5.0-alpine AS final
 
-FROM base AS final
+RUN adduser --disabled-password \
+    --home /app \
+    --gecos '' dotnetuser && chown -R dotnetuser /app
+
+RUN apk upgrade musl
+
+USER dotnetuser
 WORKDIR /app
+EXPOSE 5000
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Catalog.dll"]
+ENTRYPOINT ["dotnet", "Catalog.dll", "--urls", "http://localhost:5000"]
