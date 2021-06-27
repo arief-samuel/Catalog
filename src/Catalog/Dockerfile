@@ -23,4 +23,4 @@ USER dotnetuser
 WORKDIR /app
 EXPOSE 5000
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Catalog.dll", "--urls", "http://localhost:5000"]
+ENTRYPOINT ["./Catalog", "--urls", "http://0.0.0.0:5000"]
