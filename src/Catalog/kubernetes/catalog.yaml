@@ -6,6 +6,12 @@ spec:
   selector:
     matchLabels:
       app: catalog
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
@@ -13,7 +19,7 @@ spec:
     spec:
       containers:
         - name: catalog
-          image: arief21/catalog:v1.0.3
+          image: arief21/catalog:v1.0.4
           resources:
             limits:
               memory: "128Mi"

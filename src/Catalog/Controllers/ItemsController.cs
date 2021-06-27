@@ -26,6 +26,8 @@ namespace Catalog.Controllers
         {
             var items = (await repository.GetItemAsync())
                         .Select(item => item.AsDto());
+            _logger.LogInformation($"{DateTime.Now} Retrived : {items.Count().ToString()}");
+
             return items;
         }
         [HttpGet("{Id}")]
