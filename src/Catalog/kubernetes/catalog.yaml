@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-deployment
+spec:
+  selector:
+    matchLabels:
+      app: catalog
+  template:
+    metadata:
+      labels:
+        app: catalog
+    spec:
+      containers:
+        - name: catalog
+          image: arief21/catalog:v1.0.3
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MongoDbSettings__Host
+              value: mongodb-service
+            - name: MongoDbSettings__Password
+              valueFrom:
+                secretKeyRef:
+                  name: catalog-secrets
+                  key: mongodb-pasword
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 5000
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 5000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: catalog
+  ports:
+    - port: 5000
+      targetPort: 5000
