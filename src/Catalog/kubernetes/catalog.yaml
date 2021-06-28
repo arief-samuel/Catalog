@@ -6,12 +6,6 @@ spec:
   selector:
     matchLabels:
       app: catalog
-  replicas: 2
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
   template:
     metadata:
       labels:
@@ -28,7 +22,7 @@ spec:
             - containerPort: 5000
           env:
             - name: MongoDbSettings__Host
-              value: mongodb-service
+              value: mongo-service
             - name: MongoDbSettings__Password
               valueFrom:
                 secretKeyRef:

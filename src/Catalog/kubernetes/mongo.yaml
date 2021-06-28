@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb-statefulset
+  name: mongo-statefulset
 spec:
-  serviceName: "mongodb-service"
+  serviceName: "mongo-service"
   selector:
     matchLabels:
-      app: mongodb
+      app: mongo
   template:
     metadata:
       labels:
-        app: mongodb
+        app: mongo
     spec:
       containers:
-        - name: mongodb
+        - name: mongo
           image: mongo
           resources:
             limits:
@@ -45,11 +45,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb-service
+  name: mongo-service
 spec:
   clusterIP: None
   selector:
-    app: mongodb
+    app: mongo
   ports:
     - port: 27017
       targetPort: 27017
